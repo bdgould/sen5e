@@ -1,0 +1,19 @@
+{
+  "delay": 1000,
+  "sensors": [
+    {
+      "pin": 4,
+      "name": "attic"
+    },
+    {
+      "pin": 17,
+      "name": "hallway"
+    }
+  ],
+  "influxdb": {
+    "url": "http://localhost:8086",
+    "org": "gould",
+    "token": "40pAJsxKChan8ppGYF5p-Z_KbE_T_mzqQjXe_K_tk_BiyQ7S_m3TbphTVMrEqvxZe_CQwNrJVpSbod2ahvWbLw==",
+    "bucket": "temperatures"
+  }
+}

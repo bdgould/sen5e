@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+
+import sys
+import signal
+import time
+import influxdb_client
+from influxdb_client.client.write_api import SYNCHRONOUS
+from sensors import Sensor22
+from configuration import Config
+import argparse
+from pid_help import *
+
+
+class Sen5e:
+
+    def __init__(self, args):
+        self.args = args
+        self.conf = Config(args.conf)
+        self.monitoring = False;
+
+    def start(self):
+        self.monitoring = True
+        sensors = []
+        for s in self.conf.sensors:
+            sensors.append(Sensor22(s.pin, s.name))
+
+        client = influxdb_client.InfluxDBClient(url=self.conf.influx.url, token=self.conf.influx.token,
+                                                org=self.conf.influx.org)
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+
+        while self.monitoring:
+            for sensor in sensors:
+                reading = sensor.sense()
+                temp_point = influxdb_client.Point("temperature") \
+                    .tag("sensor", reading.sensor_name) \
+                    .field("fahrenheit", reading.fahrenheit) \
+                    .field("celsius", reading.celsius) \
+                    .field("humidity", reading.humidity)
+                write_api.write(bucket=self.conf.influx.bucket, org=self.conf.influx.org, record=temp_point)
+            time.sleep(self.conf.loopDelay)
+
+
+
+def stop(pid, args):
+    # Kill the process if necessary
+    if pid is not None:
+        if pid_exists(pid):
+            os.kill(pid, signal.SIGTERM)
+            print("Stopped Mobier Daemon running on pid: " + str(pid))
+        else:
+            print("** PID file exists for '" + str(pid) + "', but no such process exists!" \
+                                                          "\nMobier Daemon is not currently running.")
+        destroy_pid_file(args.pid)
+    # Else no daemon to kill.
+    else:
+        print("Mobier Daemon is not currently running")
+
+
+def status(pid):
+    if pid is not None and pid_exists(pid):
+        print("Process is running with pid: " + str(pid))
+    else:
+        print("Process is not currently running")
+
+
+def __main__():
+    parser = argparse.ArgumentParser(description="DHT Temperature Reporter")
+    parser.add_argument("command", help="Command to run: start, stop, restart, status")
+    parser.add_argument("-pid", default="/etc/sen5e/pid.lock", help="Where to write the pid lock file to")
+    parser.add_argument("-conf", default="/etc/sen5e/config.json",
+                        help="Location of the configuration.json.  Defaults to /etc/sen5e/config.json")
+    args = parser.parse_args()
+    # Fork a new process.
+    local_pid = os.fork()
+    # Exit parent process.
+    if local_pid != 0:
+        sys.exit(0)
+    # Monitor pid.
+    pid = ensure_pid_file_and_start(args.pid, args.command == "start")
+    if args.command == "start":
+        daemon = Sen5e(args)
+        daemon.start()
+    elif args.command == "stop":
+        stop(pid, args)
+    elif args.command == "status":
+        status(pid)
+    else:
+        print("Unrecognized command specified: " + args.command)
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    __main__()

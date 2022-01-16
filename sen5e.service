@@ -1,0 +1,16 @@
+[Unit]
+Description=Sen5e will monitor configure DHT22 sensors for humidity and temperature.
+After=network.target
+StartLimitIntervalSec=30
+
+[Service]
+Type=forking
+PIDFile=/etc/sen5e/pid
+User=sen5e
+ExecStart=/opt/sen5e/sen5e start
+ExecStop=/opt/sen5e/sen5e start
+ExecReload=/opt/sen5e/sen5e stop;/opt/sen5e/sen5e start
+Restart=always
+
+[Install]
+WantedBy=default.target
