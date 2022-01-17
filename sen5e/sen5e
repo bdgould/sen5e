@@ -4,10 +4,10 @@ import sys
 import signal
 import time
 import influxdb_client
+import argparse
 from influxdb_client.client.write_api import SYNCHRONOUS
 from sensors import Sensor22
 from configuration import Config
-import argparse
 from pid_help import *
 
 

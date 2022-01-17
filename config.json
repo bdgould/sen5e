@@ -12,8 +12,8 @@
   ],
   "influxdb": {
     "url": "http://localhost:8086",
-    "org": "gould",
-    "token": "40pAJsxKChan8ppGYF5p-Z_KbE_T_mzqQjXe_K_tk_BiyQ7S_m3TbphTVMrEqvxZe_CQwNrJVpSbod2ahvWbLw==",
-    "bucket": "temperatures"
+    "org": "influx_db_org",
+    "token": "influx_db_token",
+    "bucket": "influx_db_bucket"
   }
 }
