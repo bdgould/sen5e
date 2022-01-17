@@ -19,8 +19,7 @@ class Sensor22:
         self.name = name
 
     def sense(self):
-        # humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT22, self.pin)
-        humidity, temperature = 0, 0
+        humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT22, self.pin)
         if humidity is not None and temperature is not None:
             return Reading(self.name, humidity, temperature)
         else:
