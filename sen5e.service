@@ -8,7 +8,7 @@ Type=forking
 PIDFile=/etc/sen5e/pid
 User=sen5e
 ExecStart=/opt/sen5e/sen5e start
-ExecStop=/opt/sen5e/sen5e start
+ExecStop=/opt/sen5e/sen5e stop
 ExecReload=/opt/sen5e/sen5e stop;/opt/sen5e/sen5e start
 Restart=always
 
