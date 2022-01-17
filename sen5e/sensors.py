@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-
-# import Adafruit_DHT
+import Adafruit_DHT
 
 
 class Reading:
