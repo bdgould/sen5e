@@ -14,7 +14,7 @@ After hooking up your DHT22 sensors to your GPIO board
 you can configure this python daemon to monitor and report the sensor
 readings. 
 
- 1. Run install.sh to install pip3 dependencies and then distribute
+ 1. Run `install.sh` to install pip3 dependencies and then distribute
  files to necessary locations.
  2. Configure the daemon process to 
  3. Use `systemctl start sen5e` to start the daemon process
